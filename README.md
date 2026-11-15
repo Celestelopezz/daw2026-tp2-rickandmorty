@@ -1,66 +1,162 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Rick & Morty App (Laravel) - DAW 2026 - TP2
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Aplicación web en **Laravel 12** que permite explorar personajes, episodios y ubicaciones de Rick and Morty, y que los usuarios registrados armen sus propias listas.
 
-## About Laravel
+Parte del modelo de datos del TP1, ahora con migraciones, modelos Eloquent y autenticación con Laravel Breeze.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Requisitos
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- PHP 8.2 o superior
+- Composer
+- Node.js (LTS) y npm
+- MySQL / MariaDB (XAMPP sirve)
+- Git
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Instalación
 
-## Learning Laravel
+1. Clonar el repositorio y entrar a la carpeta:
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+```bash
+git clone https://github.com/Celestelopezz/daw2026-tp2-rickandmorty.git
+cd daw2026-tp2-rickandmorty
+```
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+2. Instalar dependencias de PHP:
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+```bash
+composer install
+```
 
-## Laravel Sponsors
+3. Crear el archivo de configuración y generar la clave de la app:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+```bash
+copy .env.example .env
+php artisan key:generate
+```
 
-### Premium Partners
+(En Linux/Mac: `cp .env.example .env`)
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+4. Crear la base de datos vacía `rick_and_morty_laravel` en phpMyAdmin, con cotejamiento `utf8mb4_unicode_ci`.
 
-## Contributing
+5. Revisar en el `.env` los datos de conexión. Los valores por defecto sirven para XAMPP:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=rick_and_morty_laravel
+DB_USERNAME=root
+DB_PASSWORD=
+```
 
-## Code of Conduct
+Si tu MySQL usa otro puerto o contraseña, cambialos acá. **El `.env` nunca se sube a git.**
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+6. Crear las tablas:
 
-## Security Vulnerabilities
+```bash
+php artisan migrate
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+7. Cargar los datos desde la API (tarda 1 o 2 minutos):
 
-## License
+```bash
+php artisan rickandmorty:import
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Se puede ejecutar más de una vez sin duplicar datos. Si la API responde con error 429 (demasiados pedidos), esperar un minuto y volver a ejecutarlo.
+
+8. Instalar y compilar los estilos:
+
+```bash
+npm install
+npm run build
+```
+
+9. Levantar el servidor:
+
+```bash
+php artisan serve
+```
+
+Abrir http://127.0.0.1:8000
+
+Resultado esperado de la importación: 826 personajes, 51 episodios, 126 ubicaciones.
+
+## Problemas frecuentes (Windows)
+
+- **`npm` bloqueado por PowerShell**: ejecutar `Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned`.
+- **`node` o `npm` no se reconocen**: cerrar y volver a abrir VS Code después de instalar Node.
+- **Error de conexión a la base**: verificar que MySQL esté prendido en XAMPP y que el puerto del `.env` coincida.
+
+## Modelo de datos
+
+ Tabla /                             Descripción 
+
+| `locations`                 | Ubicaciones (id de la API) |
+| `episodes`                  | Episodios (id de la API) |
+| `characters`                | Personajes; `location_id` apunta a `locations` |
+| `character_episode`         | Pivote N:M entre personajes y episodios |
+| `users`                     | Usuarios (Breeze) |
+| `user_lists`                | Listas personalizadas: `user_id`, `name`, `type` (`characters` o `episodes`) |
+| `character_user_list`       | Pivote: personajes de cada lista (clave primaria compuesta) |
+| `episode_user_list`         | Pivote: episodios de cada lista (clave primaria compuesta) |
+
+Los IDs de `locations`, `episodes` y `characters` vienen de la API, por eso no son autoincrementales.
+
+### Reglas de las listas
+
+- Cada lista pertenece a un usuario y es de un solo tipo (personajes o episodios).
+- No se repiten elementos dentro de una lista: lo garantiza la clave primaria compuesta de la tabla pivote.
+- Que una lista acepte solo su tipo, y que cada usuario toque solo sus listas, se valida en el código (controlador y Policy).
+
+## Estructura relevante
+
+```
+app/Models/                       Character, Episode, Location, UserList, User
+app/Console/Commands/             ImportRickAndMorty (php artisan rickandmorty:import)
+database/migrations/              Esquema de la base
+routes/web.php                    Rutas de la app
+routes/auth.php                   Rutas de login y registro (Breeze)
+resources/views/                  Vistas Blade
+```
+
+## Cómo trabajamos en grupo
+
+- **Nadie pushea directo a `main`.** Cada funcionalidad va en su rama y se une con un Pull Request.
+- Ramas sugeridas:
+  - `feature/personajes`
+  - `feature/episodios`
+  - `feature/ubicaciones`
+  - `feature/listas`
+- Flujo:
+
+```bash
+git checkout main
+git pull
+git checkout -b feature/nombre
+# trabajar, y después:
+git add .
+git commit -m "Descripción clara del cambio"
+git push -u origin feature/nombre
+```
+
+Después abrir el Pull Request en GitHub.
+
+- Cada Pull Request lo revisa otra persona, que debe hacerle al autor al menos una pregunta del tipo "¿por qué lo hiciste así?".
+- Antes de empezar a trabajar: `git pull` en `main`.
+- Si se agrega una migración nueva, avisar al grupo para que todos corran `php artisan migrate`.
+
+### Reparto
+
+ Integrante / Funcionalidad /
+
+ A- Explorador de personajes: listado, filtros, paginación, detalle 
+ B- Explorador de episodios: listado, detalle, personajes del episodio 
+ C- Explorador de ubicaciones: listado, detalle, residentes, menú de navegación 
+ D- Listas personalizadas: CRUD, agregar y quitar elementos, permisos 
+
+El explorador es público. Las listas requieren sesión iniciada.
+
+## Entrega
+
+Cada integrante entrega de forma individual un ZIP llamado `DAW-2026-TP02-apellido-nombre.zip`, con el proyecto, el SQL/migraciones, el `.env.example`, este README y el informe final (incluyendo la declaración de uso de IA).
