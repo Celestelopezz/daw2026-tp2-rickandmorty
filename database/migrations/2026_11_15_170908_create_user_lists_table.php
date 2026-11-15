@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->cascadeOnDelete(); // si se borra un usurio, tambien se borra la lista
             $table->string('name');
             $table->enum('type', ['characters', 'episodes']);
-            $table->timestamps(); // cuando cree cada lista 
+            $table->timestamps(); // cuando creé cada lista 
         });
     }
 
